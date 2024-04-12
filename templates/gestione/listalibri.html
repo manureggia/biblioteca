@@ -1,0 +1,32 @@
+{% extends 'base/base.html' %}
+{% block content %}
+    <h1> {{ title }} </h1>
+    {% if listalibri.count > 0 %}
+        <p> Ci sono ben {{listalibri.count}} libri in questa biblioteca! </p>
+        <table class="table table-striped table-sm">
+
+            <thead>
+                <tr>
+                  <th scope="col">Titolo</th>
+                  <th scope="col">Autore</th>
+                  <th scope="col">Dettagli</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for l in listalibri %}
+                    <tr>
+                    <td>{{ l.titolo }}</td>
+                    <td>{{ l.autore }}</td>
+                    <td> <a class="btn btn-sm btn-info" href="{% url 'dettaglio' l.id %}">Dettaglio</a></td>
+                </tr>
+                {% endfor %}
+                
+            </tbody>
+        </table>
+            
+        
+    {% else %}
+        <p>Non ci sono libri!</p>
+    {% endif %}
+    <button><a href="{% url 'crea_libro' %}">Crea un libro</a></button>
+{% endblock %}
