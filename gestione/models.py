@@ -34,7 +34,4 @@ class Copia(models.Model):
         return out
 
 
-class CustomUser(models.Model):
-     #Altri campi utente personalizzati
-    prestiti_ids = my_custom_field = models.CharField(max_length=100, blank=True, null=True)
 

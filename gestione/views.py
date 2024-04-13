@@ -65,7 +65,6 @@ def presta_libro(request, id):
     if copia:
         copia.data_prestito = datetime.now()
         copia.save()
-        request.user.in_prestito.append(id)
         messages.success(request, "Libro Prestato con successo")
         return redirect('lista')
     messages.error(request,"Non sono presenti copie di questo libro")
