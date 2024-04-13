@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.shortcuts import render, redirect
 
@@ -11,7 +13,9 @@ def lista_libri(request):
     template_name = "gestione/listalibri.html"
 
     ctx = { "title": "Lista Libri",
-            "listalibri": Libro.objects.all()}
+            "listalibri": Libro.objects.all(),
+            "request": request
+            }
     return render(request, template_name, ctx)
 
 def mattoni(request):
@@ -54,3 +58,15 @@ def crea_libro(request):
         messages.error(request, "Errore nella creazione, form non valido")
     form = ModificaLibroForm()
     return render(request,'gestione/crea-libro.html',{'form':form})
+
+def presta_libro(request, id):
+    libro = Libro.objects.get(pk=id)
+    copia = libro.copie.filter(data_prestito__isnull=True)[0] if libro.copie.filter(data_prestito__isnull=True).count() > 0 else None
+    if copia:
+        copia.data_prestito = datetime.now()
+        copia.save()
+        request.user.in_prestito.append(id)
+        messages.success(request, "Libro Prestato con successo")
+        return redirect('lista')
+    messages.error(request,"Non sono presenti copie di questo libro")
+    return redirect('lista')
