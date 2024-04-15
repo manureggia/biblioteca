@@ -78,12 +78,15 @@ def restituisci_libro(request, id):
         copie = Copia.objects.filter(utente_id=request.user.id, libro_id=id)
         if request.method == 'POST':
             if request.POST.get('id'):
+                message = "Libro restituito con successo"
                 copia = Copia.objects.get(pk=request.POST.get('id'))
                 copia.data_prestito = None
                 copia.utente_id = None
+                if copia.scaduto:
+                    message +=": Hai sforato la data di riconsega!"
                 copia.scaduto = False
                 copia.save()
-                messages.success(request, "Libro restituito con successo")
+                messages.success(request, message)
                 if copie.count() == 0:
                     return redirect('lista')
         if copie.count() > 0:
