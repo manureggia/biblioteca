@@ -2,7 +2,8 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from gestione.views import lista_libri, mattoni, dettaglio_libro, edita_libro, crea_libro, presta_libro
+from gestione.views import lista_libri, mattoni, dettaglio_libro, edita_libro, crea_libro, presta_libro, \
+    restituisci_libro
 
 urlpatterns = [
     path('', lista_libri, name="lista"),
@@ -11,6 +12,6 @@ urlpatterns = [
     path('detail/<int:id>', dettaglio_libro, name="dettaglio"),
     path('edit/<int:id>', edita_libro, name="edita"),
     path('aggiungi/', crea_libro, name="crea_libro"),
-    path('prestito/<int:id>', presta_libro, name="prestito")
-
+    path('prestito/<int:id>', presta_libro, name="prestito"),
+    path('restituisci/<int:id>', restituisci_libro, name="restituisci_libro")
 ]

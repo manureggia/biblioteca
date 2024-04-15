@@ -9,5 +9,5 @@ urlpatterns = [
 
 ]
 #erase_db()
-init_db()
-start_controllo_scadenza(5)
+#init_db()
+#start_controllo_scadenza(5)

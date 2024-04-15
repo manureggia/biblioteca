@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.contrib.auth.models import User
+
 
 
 # Create your models here.
@@ -24,6 +25,9 @@ class Copia(models.Model):
     data_prestito = models.DateTimeField(default=None, null=True)
     scaduto = models.BooleanField(default=False)
     libro = models.ForeignKey(Libro, on_delete=models.CASCADE, related_name='copie')
+    utente = models.ForeignKey(User,
+                               on_delete=models.PROTECT, blank=True, null=True, default=None,
+                               related_name="copie_in_prestito")
 
     def __str__(self):
         out = "Copia di" + self.libro.titolo + " di " + self.libro.autore + ":"
@@ -32,6 +36,3 @@ class Copia(models.Model):
         else:
             out += "Copia non scaduta"
         return out
-
-
-

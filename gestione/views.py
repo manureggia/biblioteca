@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 
 from gestione.forms import ModificaLibroForm
-from gestione.models import Libro
+from gestione.models import Libro, Copia
 
 
 # Create your views here.
@@ -61,11 +61,35 @@ def crea_libro(request):
 
 def presta_libro(request, id):
     libro = Libro.objects.get(pk=id)
-    copia = libro.copie.filter(data_prestito__isnull=True)[0] if libro.copie.filter(data_prestito__isnull=True).count() > 0 else None
-    if copia:
-        copia.data_prestito = datetime.now()
-        copia.save()
-        messages.success(request, "Libro Prestato con successo")
+    user = request.user
+    if user.is_authenticated:
+        copia = libro.copie.filter(data_prestito__isnull=True)[0] if libro.copie.filter(data_prestito__isnull=True).count() > 0 else None
+        if copia:
+            copia.utente_id = request.user.id
+            copia.data_prestito = datetime.now()
+            copia.save()
+            messages.success(request, "Libro Prestato con successo")
+            return redirect('lista')
+        messages.error(request,"Non sono presenti copie di questo libro")
         return redirect('lista')
-    messages.error(request,"Non sono presenti copie di questo libro")
+
+def restituisci_libro(request, id):
+    if request.user.is_authenticated:
+        copie = Copia.objects.filter(utente_id=request.user.id, libro_id=id)
+        if request.method == 'POST':
+            if request.POST.get('id'):
+                copia = Copia.objects.get(pk=request.POST.get('id'))
+                copia.data_prestito = None
+                copia.utente_id = None
+                copia.scaduto = False
+                copia.save()
+                messages.success(request, "Libro restituito con successo")
+                if copie.count() == 0:
+                    return redirect('lista')
+        if copie.count() > 0:
+            template_name = 'gestione/restituisci-libro.html'
+            return render(request, template_name, {'copie': copie})
+        messages.warning(request, "Non sono presenti copie di questo libro in prestito a questo utente")
+        return redirect('lista')
+    messages.error(request,"Non Autenticato!")
     return redirect('lista')
