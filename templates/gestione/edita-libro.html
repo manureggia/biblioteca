@@ -3,7 +3,7 @@
     <h1>Modifica di "{{ form.titolo.value }}"</h1>
     <form action="" method="POST">
         {% csrf_token %}
-        {{ form }}
+        {{ form.as_p }}
         <input type="submit">
     </form>
 {% endblock %}

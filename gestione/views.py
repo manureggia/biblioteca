@@ -57,7 +57,7 @@ def crea_libro(request):
                 messages.error(request, ex)
         messages.error(request, "Errore nella creazione, form non valido")
     form = ModificaLibroForm()
-    return render(request,'gestione/crea-libro.html',{'form':form})
+    return render(request,'gestione/crea-libro.html', {'form': form})
 
 def presta_libro(request, id):
     libro = Libro.objects.get(pk=id)
